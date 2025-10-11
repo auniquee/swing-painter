@@ -6,9 +6,10 @@ import java.util.Deque;
 import java.util.Iterator;
 
 public class Canvas {
-    private final Deque<Shape> shapes = new ArrayDeque<>();
+    private final Deque<Shape> shapes = new ArrayDeque<>(); //index 0 is last added element
     private final GeometricShape previewShape = new GeometricShape(0, 0, 0, 0, Color.BLACK, ShapeType.OVAL);
-    //index 0 is last added element
+    private int previewShapeStartX;
+    private int previewShapeStartY;
 
     public void addShape(Shape s) {
         shapes.push(s);
@@ -28,7 +29,7 @@ public class Canvas {
      */
     public Iterator<Shape> getIterator(){
         Deque<Shape> tempList = new ArrayDeque<>(shapes);
-        tempList.add(previewShape);
+        tempList.addFirst(previewShape);
         return tempList.reversed().iterator();
     }
 
@@ -39,9 +40,23 @@ public class Canvas {
     public void resetPreviewShape(){
         previewShape.setX(0);
         previewShape.setY(0);
-        previewShape.setX2(0);
-        previewShape.setY2(0);
+        previewShape.setWidth(0);
+        previewShape.setHeight(0);
+    }
 
+    public int getPreviewShapeStartX() {
+        return previewShapeStartX;
+    }
 
+    public void setPreviewShapeStartX(int previewShapeStartX) {
+        this.previewShapeStartX = previewShapeStartX;
+    }
+
+    public int getPreviewShapeStartY() {
+        return previewShapeStartY;
+    }
+
+    public void setPreviewShapeStartY(int previewShapeStartY) {
+        this.previewShapeStartY = previewShapeStartY;
     }
 }

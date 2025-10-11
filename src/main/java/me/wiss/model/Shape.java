@@ -2,11 +2,11 @@ package me.wiss.model;
 
 import java.awt.*;
 
-public class Shape {
+public class Shape implements Cloneable{
 
     private int x;
     private int y;
-    private final ShapeSettings shapeSettings;
+    private ShapeSettings shapeSettings;
 
 
 
@@ -47,5 +47,17 @@ public class Shape {
     }
     public ShapeSettings getShapeSettings() {
         return shapeSettings;
+    }
+
+    @Override
+    public Shape clone() {
+        try {
+            Shape clone = (Shape) super.clone();
+            clone.shapeSettings = new ShapeSettings(this.shapeSettings.getColor(), this.shapeSettings.getShapeType());
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

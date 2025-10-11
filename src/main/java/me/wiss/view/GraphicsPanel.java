@@ -3,11 +3,9 @@ package me.wiss.view;
 import me.wiss.model.Canvas;
 import me.wiss.model.GeometricShape;
 import me.wiss.model.Shape;
-import me.wiss.model.ShapeType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.InvalidClassException;
 import java.util.Iterator;
 
 public class GraphicsPanel extends JPanel {
@@ -36,10 +34,20 @@ public class GraphicsPanel extends JPanel {
                     GeometricShape geometricShape = (GeometricShape) shape;
                     int x1 = geometricShape.getX();
                     int y1 = geometricShape.getY();
-                    int x2 = geometricShape.getX2();
-                    int y2 = geometricShape.getY2();
-                    System.out.println(x1 + " " + x2 + " " + y1 + " " + y2);
+                    int x2 = geometricShape.getWidth();
+                    int y2 = geometricShape.getHeight();
+
                     graphics.fillOval(x1, y1, x2, y2);
+                }
+                case RECTANGLE -> {
+                    GeometricShape geometricShape = (GeometricShape) shape;
+
+                    int x1 = geometricShape.getX();
+                    int y1 = geometricShape.getY();
+                    int x2 = geometricShape.getWidth();
+                    int y2 = geometricShape.getHeight();
+
+                    graphics.fillRect(x1, y1, x2, y2);
                 }
             }
         }

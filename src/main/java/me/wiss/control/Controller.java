@@ -33,6 +33,7 @@ public class Controller {
         drawListener = new DrawListener();
 
         graphicsPanel.addMouseListener(drawListener);
+        graphicsPanel.addMouseMotionListener(drawListener);
         setupButtonListeners(window.getButtons());
 
     }
@@ -76,10 +77,15 @@ public class Controller {
                 GeometricShape previewShape = canvas.getPreviewShape();
                 ShapeSettings previewSettings = previewShape.getShapeSettings();
 
-                previewShape.setX(mouseEvent.getX());
-                previewShape.setY(mouseEvent.getY());
-                previewShape.setX2(mouseEvent.getX());
-                previewShape.setY2(mouseEvent.getY());
+                int eventX = mouseEvent.getX();
+                int eventY = mouseEvent.getY();
+
+                previewShape.setX(eventX);
+                previewShape.setY(eventY);
+                previewShape.setWidth(0);
+                previewShape.setHeight(0);
+                canvas.setPreviewShapeStartX(eventX);
+                canvas.setPreviewShapeStartY(eventY);
 
                 previewSettings.setColor(shapeSettings.getColor());
                 previewSettings.setShapeType(shapeSettings.getShapeType());
@@ -90,7 +96,7 @@ public class Controller {
         @Override
         public void mouseReleased(MouseEvent mouseEvent) {
             if(shapeSettings.getShapeType() != ShapeType.DOT){
-                canvas.addShape(canvas.getPreviewShape());
+                canvas.addShape(canvas.getPreviewShape().clone());
                 canvas.resetPreviewShape();
 
                 graphicsPanel.repaint();
@@ -108,9 +114,48 @@ public class Controller {
             if(shapeSettings.getShapeType() != ShapeType.DOT){
                 GeometricShape previewShape = canvas.getPreviewShape();
 
-                previewShape.setX2(mouseEvent.getX());
-                previewShape.setY2(mouseEvent.getY());
+                int eventX = mouseEvent.getX();
+                int eventY = mouseEvent.getY();
 
+                int startX = canvas.getPreviewShapeStartX();
+                int startY = canvas.getPreviewShapeStartY();
+
+                // Medveten om att man kan göra detta med nested if-satser, men anser att det blir väldigt svårt att läsa
+                // och tolka.
+                // Varje if sats hanterar varje kvardrant för sig, och sista else-blocket hanterar edge-cases när
+                // eventX == startX och/eller samma fast med Y.
+                int width, height;
+                if(eventX > startX && eventY > startY) { //Ner höger kvadrant
+                    width = eventX - startX;
+                    height = eventY - startY;
+
+                    previewShape.setX(startX);
+                    previewShape.setY(startY);
+                }else if(eventX < startX && eventY > startY){ // Ner vänster kvadrant
+                    width = startX - eventX;
+                    height = eventY - startY;
+
+                    previewShape.setX(eventX);
+                    previewShape.setY(startY);
+                } else if(eventX > startX && eventY < startY) { // Upp höger kvadrant
+                    width = eventX - startX;
+                    height = startY - eventY;
+
+                    previewShape.setX(startX);
+                    previewShape.setY(eventY);
+                }
+                else if(eventX < startX && eventY < startY) { // Upp vänster kvadrant
+                    width = startX - eventX;
+                    height = startY - eventY;
+
+                    previewShape.setX(eventX);
+                    previewShape.setY(eventY);
+                }else { // mitt emellan kvadranter
+                    width = 0;
+                    height = 0;
+                }
+                previewShape.setWidth(width);
+                previewShape.setHeight(height);
                 graphicsPanel.repaint();
             }
         }
@@ -118,4 +163,6 @@ public class Controller {
         @Override
         public void mouseMoved(MouseEvent mouseEvent) {}
     }
+
+
 }
