@@ -22,7 +22,6 @@ public class Controller {
     private final Window window; // view
     private final GraphicsPanel graphicsPanel; // view
     private final ButtonListener buttonListener; //controller
-    private final DrawListener drawListener; //controller
 
     public Controller(){
         canvas = new Canvas();
@@ -32,12 +31,13 @@ public class Controller {
         window = new Window(graphicsPanel);
 
         buttonListener = new ButtonListener();
-        drawListener = new DrawListener();
+
+        DrawListener drawListener = new DrawListener();
 
         graphicsPanel.addMouseListener(drawListener);
         graphicsPanel.addMouseMotionListener(drawListener);
         setupButtonListeners(window.getButtons());
-
+        window.setMode(shapeSettings);
     }
 
     private void setupButtonListeners(EnumMap<Window.ButtonType, JButton> buttons){
@@ -55,9 +55,7 @@ public class Controller {
             objectOutputStream.writeObject(canvas);
             objectOutputStream.flush();
             objectOutputStream.close();
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
+        }catch (IOException ignored) { }
     }
 
     public void load(String name) {
@@ -73,11 +71,7 @@ public class Controller {
             while(canvasIterator.hasNext()){
                 canvas.addShape(canvasIterator.next());
             }
-
-        }catch (IOException | ClassNotFoundException e){
-            e.printStackTrace();
-        }
-
+        }catch (IOException | ClassNotFoundException ignored){ }
     }
 
     private class ButtonListener implements ActionListener {
@@ -102,6 +96,7 @@ public class Controller {
                 }
                 default -> throw new IllegalStateException();
             }
+            window.setMode(shapeSettings);
         }
     }
 

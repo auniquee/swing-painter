@@ -1,15 +1,15 @@
 package me.wiss.view;
 
+import me.wiss.model.ShapeSettings;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.EnumMap;
-import java.util.Map;
 
 public class Window extends JFrame {
 
     private final EnumMap<ButtonType, JButton> buttons = new EnumMap<>(ButtonType.class);
-
+    private final JPanel modePanel;
     //window is strictly view, only makes buttons, places them, sets everything up
     //rest is up to controller
     public Window(GraphicsPanel graphicsPanel){
@@ -17,9 +17,19 @@ public class Window extends JFrame {
         setLocation(50, 50);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setBackground(Color.gray);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, getWidth() / 60, 5));
+        modePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
+        modePanel.setBackground(Color.gray);
+
+        buttonPanel.setBackground(Color.gray);
+        buttonPanel.setPreferredSize(new Dimension(getWidth(), getHeight() / 20));
+
+        JTextArea modeText = new JTextArea();
+        modeText.setRows(1);
+        modeText.setBackground(Color.GRAY);
+        modeText.setSelectionStart(0);
+        modePanel.add(modeText, BorderLayout.WEST);
 
         buttons.put(ButtonType.BLACK, new JButton("black"));
         buttons.put(ButtonType.RED, new JButton("red"));
@@ -32,18 +42,27 @@ public class Window extends JFrame {
         buttons.put(ButtonType.LOAD, new JButton("load"));
 
         for(JButton button : buttons.values()){
-            buttonPanel.add(button, BorderLayout.NORTH);
+            button.setPreferredSize(
+                    new Dimension(
+                            buttonPanel.getPreferredSize().width / 11,
+                            buttonPanel.getPreferredSize().height
+                    )
+            );
+            buttonPanel.add(button);
         }
 
-        buttonPanel.setSize(800, getX()/5);
-
         add(buttonPanel, BorderLayout.NORTH);
+        add(modePanel, BorderLayout.SOUTH);
         add(graphicsPanel, BorderLayout.CENTER);
 
 
 
 
         setVisible(true);
+    }
+
+    public void setMode(ShapeSettings shapeSettings) {
+        ((JTextArea) modePanel.getComponent(0)).setText("Mode: " + shapeSettings.getShapeType().name() + " using color " + shapeSettings.getColor().toString());
     }
 
     public String showInputBox(boolean save){
