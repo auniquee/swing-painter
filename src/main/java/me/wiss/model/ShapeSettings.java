@@ -1,8 +1,9 @@
 package me.wiss.model;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class ShapeSettings implements Cloneable{
+public class ShapeSettings implements Cloneable, Serializable {
     private Color color;
     private ShapeType shapeType;
 

@@ -1,11 +1,12 @@
 package me.wiss.model;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
 
-public class Canvas {
+public class Canvas implements Serializable {
     private final Deque<Shape> shapes = new ArrayDeque<>(); //index 0 is last added element
     private final GeometricShape previewShape = new GeometricShape(0, 0, 0, 0, Color.BLACK, ShapeType.OVAL);
     private int previewShapeStartX;
@@ -23,6 +24,9 @@ public class Canvas {
         return shapes.isEmpty();
     }
 
+    public void clear() {
+        shapes.clear();
+    }
     /**
      * .next() will return first element drawn.
      * @return an iterator starting with the first shape drawn.

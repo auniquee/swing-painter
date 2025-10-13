@@ -46,6 +46,14 @@ public class Window extends JFrame {
         setVisible(true);
     }
 
+    public String showInputBox(boolean save){
+        return JOptionPane.showInputDialog(
+                "Give a file name for "
+                + (save ? "save" : "load")
+                + " operation"
+        );
+    }
+
     public EnumMap<ButtonType, JButton> getButtons() {
         return buttons;
     }

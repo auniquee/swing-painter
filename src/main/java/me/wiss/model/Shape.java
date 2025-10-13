@@ -1,8 +1,9 @@
 package me.wiss.model;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class Shape implements Cloneable{
+public class Shape implements Cloneable, Serializable {
 
     private int x;
     private int y;

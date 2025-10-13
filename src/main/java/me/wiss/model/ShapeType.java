@@ -1,6 +1,8 @@
 package me.wiss.model;
 
-public enum ShapeType {
+import java.io.Serializable;
+
+public enum ShapeType implements Serializable {
     DOT,
     OVAL,
     RECTANGLE

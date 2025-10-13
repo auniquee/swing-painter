@@ -9,7 +9,9 @@ import me.wiss.view.Window;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Controller {
@@ -45,6 +47,39 @@ public class Controller {
         }
     }
 
+    public void save(String name) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(name);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+            objectOutputStream.writeObject(canvas);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void load(String name) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(name);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+            Canvas tempCanvas = (Canvas) objectInputStream.readObject();
+            Iterator<Shape> canvasIterator = tempCanvas.getIterator();
+
+            canvas.clear();
+
+            while(canvasIterator.hasNext()){
+                canvas.addShape(canvasIterator.next());
+            }
+
+        }catch (IOException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
+
+    }
+
     private class ButtonListener implements ActionListener {
 
         @Override
@@ -56,10 +91,20 @@ public class Controller {
                 case "RED" -> shapeSettings.setColor(Color.RED);
                 case "BLACK" -> shapeSettings.setColor(Color.BLACK);
                 case "GREEN" -> shapeSettings.setColor(Color.GREEN);
+                case "UNDO" -> {
+                    canvas.undo();
+                    graphicsPanel.repaint();
+                }
+                case "SAVE" -> save(window.showInputBox(true) + ".txt");
+                case "LOAD" -> {
+                    load(window.showInputBox(false) + ".txt");
+                    graphicsPanel.repaint();
+                }
                 default -> throw new IllegalStateException();
             }
         }
     }
+
     private class DrawListener implements MouseListener, MouseMotionListener {
 
         @Override
